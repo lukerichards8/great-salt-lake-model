@@ -141,3 +141,42 @@ a constant, so the outcome is fixed by its sign:
 
 
 **Conclusion.** The base model is structurally unstable: realistic, sustained coexistence occurs only on a single knife-edge parameter value, and any perturbation, such as a seasonal change or measurement error in $\delta_B$, sends the system to collapse or blow-up. The next version should add a carrying capacity for algae, $\beta_A A (1 - A/K)$, and a natural death term for shrimp, $-\delta_S S$, which together produce a stable coexistence equilibrium.
+
+
+## Phase 2: Logistic Algae Growth and Natural Shrimp Mortality
+
+The base model allows algae to grow without limit and shrimp to survive indefinitely when birds are absent. We now add a carrying capacity for algae and a natural death rate for shrimp.   
+
+### Equations
+
+$$
+\frac{dS}{dt} = \gamma_S C_A S A - C_S S B - \delta_S S
+$$
+
+$$
+\frac{dA}{dt} = \beta_A A\left(1 - \frac{A}{K}\right) - C_A S A
+$$
+
+$$
+\frac{dB}{dt} = -\delta_B B + \gamma_B C_S S B
+$$
+
+### New Parameters
+
+| Symbol | Meaning |
+|---|---|
+| $K$ | Algae carrying capacity in the absence of shrimp grazing |
+| $\delta_S$ | Natural death rate of shrimp |
+
+All other parameters keep their meanings from the base model.
+
+### Interpretation of New Terms
+
+- **Logistic algae growth.** $\beta_A A(1 - A/K)$ replaces unlimited exponential growth. When algae are scarce, they grow approximately as before. As algae approach $K$, their growth slows; above $K$, the growth term becomes negative.
+- **Natural shrimp death.** $-\delta_S S$ accounts for shrimp dying even when birds are absent. Shrimp must now consume enough algae to offset these losses before their population can grow.
+
+### Direction of Analysis
+
+We will examine whether these changes allow stable coexistence across a range of parameter values. As in the base model, we will start with the shrimp?algae phase plane without birds, then examine time series for all three populations and vary the bird death rate.
+
+Later, we may experiment with Holling type II feeding responses to represent consumption rates that saturate as food becomes abundant. For now, feeding interactions retain the base model's form.
