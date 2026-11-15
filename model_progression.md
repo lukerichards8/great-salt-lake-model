@@ -2,22 +2,22 @@
 
 ## Units and parameter guesses
 
-Time is in **days**; algae $A$ is water chlorophyll-a in **$\mu$g Chl-a/L**; shrimp $S$ is **individuals/L**; birds $B$ is **individuals**. Chlorophyll represents the algae community, with *Dunaliella viridis* as the focal food species. All values below are provisional, not calibrated.
+Time is in **days**; algae `A` is water chlorophyll-a in **µg Chl-a/L**; shrimp `S` is **individuals/L**; birds `B` is **individuals**. Chlorophyll represents the algae community, with *Dunaliella viridis* as the focal food species. All values below are provisional, not calibrated.
 
 | Parameter | Meaning | Value | Units | Brief justification |
 |---|---|---|---|---|
-| `beta_A` | Algae growth rate | 0.3 | day$^{-1}$ | Guess: about 2.3-day doubling at low abundance |
-| `K` | Algae carrying capacity | 50 | $\mu$g Chl-a/L | Exploratory guess; observed peaks do not directly measure capacity |
+| `beta_A` | Algae growth rate | 0.3 | day⁻¹ | Full-blown guess |
+| `K` | Algae carrying capacity | 50 | µg Chl-a/L | Full-blown guess |
 | `C_A` | Shrimp clearance coefficient | 0.02 | L/(shrimp day) | Intermediate guess informed by laboratory clearance scales (Makridis & Vadstein, 1999) |
-| `C_S` | Effective bird feeding coefficient | 0.4 | 1/(bird day) | Earlier illustrative value; needs feeding and habitat-volume estimates |
-| `gamma_S` | Shrimp gain per chlorophyll loss | 0.2 | shrimp/($\mu$g Chl-a) | Earlier illustrative conversion; needs production data |
-| `gamma_B` | Bird gain per shrimp density loss | 0.3 | bird L/shrimp | Earlier illustrative conversion; needs demographic and volume estimates |
-| `delta_S` | Shrimp natural mortality | 0.03 | day$^{-1}$ | Exploratory guess; separate from predation |
-| `delta_B` | Bird natural mortality | 0.12 | day$^{-1}$ | Earlier illustrative value; separate from migration |
-| `h_A` | Inverse maximum shrimp ingestion | 0.5 | day shrimp/($\mu$g Chl-a) | Phase 3 only; illustrative saturation guess |
-| `h_S` | Inverse maximum bird density removal | 0.5 | day bird L/shrimp | Phase 3 only; illustrative saturation guess |
+| `C_S` | Effective bird feeding coefficient | 0.4 | 1/(bird day) | Full-blown guess |
+| `gamma_S` | Shrimp gain per chlorophyll loss | 0.2 | shrimp/(µg Chl-a) | Full-blown guess |
+| `gamma_B` | Bird gain per shrimp density loss | 0.3 | bird L/shrimp | Full-blown guess |
+| `delta_S` | Shrimp natural mortality | 0.03 | day⁻¹ | Full-blown guess |
+| `delta_B` | Bird natural mortality | 0.12 | day⁻¹ | Full-blown guess |
+| `h_A` | Inverse maximum shrimp ingestion | 0.5 | day shrimp/(µg Chl-a) | Full-blown guess |
+| `h_S` | Inverse maximum bird density removal | 0.5 | day bird L/shrimp | Full-blown guess |
 
-Initial guesses: $S_0=1$ shrimp/L, $A_0=10$ $\mu$g Chl-a/L, $B_0=1$ bird. Salinity sources report experimental values in **ppt**; salinity is not yet included in the equations. Full sources, study details, exploratory ranges, and conversion notes appear at the bottom.
+Initial guesses: `S0 = 1` shrimp/L, `A0 = 10` µg Chl-a/L, `B0 = 1` bird. Salinity sources report experimental values in **ppt**; salinity is not yet included in the equations. Full sources, study details, exploratory ranges, and conversion notes appear at the bottom.
 
 ## Base Model
 
@@ -240,7 +240,7 @@ The starting handling times are $h_A=h_S=0.5$ in model units. These are explorat
 
 ## Sources and calibration notes
 
-For this exploration, the algae state $A$ is **water-column chlorophyll-a concentration**, used directly as a proxy for algae abundance. Its units are **micrograms of chlorophyll-a per liter** ($\mu$g Chl-a/L). It is not total algal dry mass or carbon. Water chlorophyll includes multiple phytoplankton species; treating it as the food available to shrimp is a simplifying assumption.
+For this exploration, the algae state $A$ is **water-column chlorophyll-a concentration**, used directly as a proxy for algae abundance. Its units are **micrograms of chlorophyll-a per liter** (µg Chl-a/L). It is not total algal dry mass or carbon. Water chlorophyll includes multiple phytoplankton species; treating it as the food available to shrimp is a simplifying assumption.
 
 *Dunaliella viridis* remains the focal algae species motivating the model. [Utah DWR, Algae and algal blooms](https://wildlife.utah.gov/gslep/wildlife/algae) identifies it as a preferred food of brine shrimp. The chlorophyll proxy is not a species-specific measurement of *D. viridis*.
 
@@ -265,9 +265,9 @@ These are starting guesses for exploration, not fitted estimates or confidence i
 | Parameter | First guess | Suggested exploratory range | Basis |
 |---|---|---|---|
 | `C_A` | 0.02 L/(shrimp day) | 0.002-0.05 | Order-of-magnitude guess informed by clearance experiments; not a measured *D. viridis* lake-average rate |
-| `beta_A` | 0.3/day | 0.1-0.6/day | Unverified guess; low-density algae doubling time about 2.3 days |
-| `K` | 50 micrograms Chl-a/L | 20-100 micrograms Chl-a/L | Unverified carrying-capacity guess; field chlorophyll peaks are not ungrazed carrying capacity |
-| `delta_S` | 0.03/day | 0.01-0.1/day | Unverified natural-mortality guess; excludes bird predation |
+| `beta_A` | 0.3/day | 0.1-0.6/day | Full-blown guess |
+| `K` | 50 micrograms Chl-a/L | 20-100 micrograms Chl-a/L | Full-blown guess |
+| `delta_S` | 0.03/day | 0.01-0.1/day | Full-blown guess |
 
 Other coefficients, including conversion factors, bird feeding/mortality, and Phase 3 handling times, retain the earlier illustrative values. They have no experimental calibration. Initial conditions are also guesses: 1 shrimp/L, 10 micrograms Chl-a/L, and 1 bird in an unspecified habitat. Bird-related results cannot be interpreted quantitatively until habitat volume and bird parameters are specified. No values were selected to guarantee coexistence.
 
