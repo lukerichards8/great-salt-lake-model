@@ -198,6 +198,16 @@ We will examine whether these changes allow stable coexistence across a range of
 
 Later, we may experiment with Holling type II feeding responses to represent consumption rates that saturate as food becomes abundant. For now, feeding interactions retain the base model's form.
 
+### Example plots
+
+![Phase 2 time series with coexistence equilibrium reference lines](model2/figures/time_series.png)
+
+
+![Phase 2 shrimp-algae phase plane without birds](model2/figures/shrimp_algae_phase_plane.png)
+
+
+![Phase 2 comparison of bird mortality rates](model2/figures/bird_mortality_comparison.png)
+
 
 ## Phase 3: Holling Type II Feeding
 
@@ -244,7 +254,6 @@ When algae is scarce, the denominator is close to 1, so Phase 3 behaves almost l
 
 ![Proportional and saturating feeding curves for shrimp and birds](model3/figures/feeding_response.png)
 
-*Dashed lines show Phase 2 feeding; solid lines show Holling type II. The horizontal dotted lines mark the feeding limits. The plot extends beyond the current algae carrying-capacity guess to make the saturation visible; those higher concentrations illustrate the formula rather than predict lake conditions.*
 
 ### A numerical example
 
@@ -296,7 +305,6 @@ Setting both handling parameters to zero removes the feeding limits and recovers
 
 ![Time series with no handling, shrimp handling only, and both feeding links saturating](model3/figures/feeding_time_series.png)
 
-*The panels hold the other parameters and initial conditions fixed while changing which feeding links saturate. Algae concentration, shrimp density, and bird count have different units, so the heights of different species' curves are not directly comparable. These are exploratory simulations, not calibrated population forecasts.*
 
 Feeding saturation can change oscillations and equilibrium stability because abundant prey no longer cause unlimited per-consumer predation. It does not automatically stabilize the ecosystem. The [Phase 3 notebook](model3/phase3_model.ipynb) checks equilibrium stability and also plots the shrimp-algae subsystem without birds.
 
