@@ -16,9 +16,9 @@
 
 $$
 \begin{aligned}
-\frac{dS}{dt} &= \gamma_S \, C_A \, S A \;-\; C_S \, S B \\[4pt]
-\frac{dA}{dt} &= \beta_A \, A \;-\; C_A \, S A \\[4pt]
-\frac{dB}{dt} &= -\delta_B \, B \;+\; \gamma_B \, C_S \, S B
+\frac{dS}{dt} &= \gamma_S C_A S A - C_S S B \\
+\frac{dA}{dt} &= \beta_A A - C_A S A \\
+\frac{dB}{dt} &= -\delta_B B + \gamma_B C_S S B
 \end{aligned}
 $$
 
@@ -35,9 +35,9 @@ $$
 
 ### Interpretation of Terms
 
-- **Interaction rates ($C$).** When two populations interact, one eats the other. For example, $C_S \, S B$ is the rate at which birds eat shrimp, and $C_A \, S A$ is the rate at which shrimp eat algae.
-- **Conversion efficiencies ($\gamma$).** $\gamma$ is the population gain from one thing consuming another. For example, $\gamma_S \, C_A \, S A$ is the shrimp population gained from all the shrimp eating algae. We always have $\gamma < 1$, because a shrimp must eat many algae before it can support producing an additional offspring (and likewise for birds eating shrimp).
-- **Natural death ($\delta$).** $\delta_B \, B$ is the loss of birds to natural death.
+- **Interaction rates ($C$).** When two populations interact, one eats the other. For example, $C_S   S B$ is the rate at which birds eat shrimp, and $C_A   S A$ is the rate at which shrimp eat algae.
+- **Conversion efficiencies ($\gamma$).** $\gamma$ is the population gain from one thing consuming another. For example, $\gamma_S C_A S A$ is the shrimp population gained from all the shrimp eating algae. We always have $\gamma < 1$, because a shrimp must eat many algae before it can support producing an additional offspring (and likewise for birds eating shrimp).
+- **Natural death ($\delta$).** $\delta_B B$ is the loss of birds to natural death.
 
 #### Term-by-term
 
@@ -74,7 +74,9 @@ $$
 
 > **Step 1: What we're looking for.** An *equilibrium* is a state where nothing changes, so all three derivatives are zero:
 >
-> $$S' = 0, \qquad A' = 0, \qquad B' = 0.$$
+> $$
+> S' = 0, \qquad A' = 0, \qquad B' = 0.
+> $$
 >
 > We want a *coexistence* equilibrium, where shrimp, algae and birds are all present ($S, A, B > 0$).
 >
@@ -82,9 +84,9 @@ $$
 >
 > $$
 > \begin{aligned}
-> A' &= \beta_A A - C_A S A = A\,(\beta_A - C_A S)\\
-> B' &= -\delta_B B + \gamma_B C_S S B = B\,(-\delta_B + \gamma_B C_S S)\\
-> S' &= \gamma_S C_A S A - C_S S B = S\,(\gamma_S C_A A - C_S B)
+> A' &= \beta_A A - C_A S A = A (\beta_A - C_A S)\\
+> B' &= -\delta_B B + \gamma_B C_S S B = B (-\delta_B + \gamma_B C_S S)\\
+> S' &= \gamma_S C_A S A - C_S S B = S (\gamma_S C_A A - C_S B)
 > \end{aligned}
 > $$
 >
@@ -92,23 +94,31 @@ $$
 >
 > **Step 3: What algae need.** Setting algae's bracket to zero:
 >
-> $$\beta_A - C_A S = 0 \quad\Longrightarrow\quad S = \frac{\beta_A}{C_A}.$$
+> $$
+> \beta_A - C_A S = 0 \quad\Longrightarrow\quad S = \frac{\beta_A}{C_A}.
+> $$
 >
 > Algae stay constant only when there are exactly enough shrimp for grazing to cancel algae growth. Fewer shrimp and algae grow; more shrimp and algae shrink.
 >
 > **Step 4: What birds need.** Setting birds' bracket to zero:
 >
-> $$-\delta_B + \gamma_B C_S S = 0 \quad\Longrightarrow\quad S = \frac{\delta_B}{\gamma_B C_S}.$$
+> $$
+> -\delta_B + \gamma_B C_S S = 0 \quad\Longrightarrow\quad S = \frac{\delta_B}{\gamma_B C_S}.
+> $$
 >
 > Birds stay constant only when there are exactly enough shrimp for bird births to cancel bird deaths.
 >
 > **Step 5: The conflict.** Algae and birds each demand a specific shrimp population, and they don't consult each other. Both conditions hold at once only if the two targets are equal:
 >
-> $$\frac{\beta_A}{C_A} = \frac{\delta_B}{\gamma_B C_S} \quad\Longrightarrow\quad \boxed{\;\delta_B = \frac{\gamma_B\, C_S\, \beta_A}{C_A}\;}$$
+> $$
+> \frac{\beta_A}{C_A} = \frac{\delta_B}{\gamma_B C_S} \quad\Longrightarrow\quad \boxed{ \delta_B = \frac{\gamma_B C_S \beta_A}{C_A} }
+> $$
 >
 > With our parameters ($\gamma_B = 0.3$, $C_S = 0.4$, $\beta_A = 1$, $C_A = 0.5$):
 >
-> $$\delta_B = \frac{0.3 \times 0.4 \times 1}{0.5} = 0.24.$$
+> $$
+> \delta_B = \frac{0.3 \times 0.4 \times 1}{0.5} = 0.24.
+> $$
 >
 > This is the **balance point**. For any other bird death rate, no coexistence equilibrium exists.
 
@@ -118,7 +128,9 @@ $$
  
 **Full model (time series).** Combining the algae and bird equations shows that
  
-$$\frac{d}{dt}\left[\gamma_B C_S \ln A + C_A \ln B\right] = \gamma_B C_S \beta_A - C_A \delta_B,$$
+$$
+\frac{d}{dt}\left[\gamma_B C_S \ln A + C_A \ln B\right] = \gamma_B C_S \beta_A - C_A \delta_B,
+$$
  
 a constant, so the outcome is fixed by its sign:
  
