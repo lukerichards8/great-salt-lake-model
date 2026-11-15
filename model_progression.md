@@ -217,26 +217,97 @@ $$
 \frac{dB}{dt} = -\delta_B B + \gamma_B\frac{C_S S B}{1+h_S C_S S}
 $$
 
-### New Parameters
+### Why feeding levels off
 
-| Symbol | Meaning |
+In Phase 2, each shrimp's feeding rate is proportional to the algae concentration:
+
+$$
+f_A(A)=C_A A.
+$$
+
+Twice as much algae means twice as much food consumed per shrimp per day. This rule has no upper limit: even an already well-fed shrimp would keep increasing its consumption as more algae appeared.
+
+Holling type II adds a feeding limit. A shrimp needs time to collect, process, and digest food, so abundant food eventually stops increasing how fast it can eat:
+
+$$
+f_A(A)=\frac{C_A A}{1+h_A C_A A}.
+$$
+
+Here, `f_A` is chlorophyll-equivalent consumption per shrimp per day. Chlorophyll is our proxy for food, rather than a direct measurement of food mass.
+
+| Parameter | What it changes |
 |---|---|
-| $h_A$ | Handling time per algae consumed by shrimp |
-| $h_S$ | Handling time per shrimp consumed by birds |
+| `C_A` | The initial slope of the feeding curve: how quickly consumption rises when algae is scarce |
+| `h_A` | The inverse maximum feeding rate: larger values mean a lower feeding limit |
 
-All other parameters keep their meanings from phase 2. Setting $h_A=h_S=0$ recovers that model.
+When algae is scarce, the denominator is close to 1, so Phase 3 behaves almost like Phase 2. When algae is abundant, the numerator and denominator both grow with algae concentration, and consumption approaches **1/h_A**. The curve bends toward this ceiling rather than increasing forever.
 
-### Interpretation of New Terms
+![Proportional and saturating feeding curves for shrimp and birds](model3/figures/feeding_response.png)
 
-- **Shrimp feeding.** $C_A A/(1+h_A C_A A)$ is consumption per shrimp. At low algae abundance it is approximately $C_A A$; for positive $h_A$, it approaches a maximum of $1/h_A$ as algae become abundant.
-- **Bird feeding.** $C_S S/(1+h_S C_S S)$ is consumption per bird. For positive $h_S$, it approaches a maximum of $1/h_S$ as shrimp become abundant.
-- **Population gains and losses.** Each feeding term appears as a loss for the prey and a gain, multiplied by the conversion efficiency, for the consumer.
+*Dashed lines show Phase 2 feeding; solid lines show Holling type II. The horizontal dotted lines mark the feeding limits. The plot extends beyond the current algae carrying-capacity guess to make the saturation visible; those higher concentrations illustrate the formula rather than predict lake conditions.*
 
-### Direction of Analysis
+### A numerical example
 
-The new [Phase 3 notebook](model3/phase3_model.ipynb) compares phase 2 with feeding saturation on one or both links. We will examine feeding curves, time series, coexistence candidates and their local stability, and the shrimp-algae phase plane without birds. Saturation may change stability, so we will check it rather than assume phase 2's behavior carries over.
+With our guesses `C_A = 0.02 L/(shrimp day)` and `h_A = 0.5 day shrimp/(microgram Chl-a)`, the maximum ingestion rate is **2 micrograms Chl-a per shrimp per day**.
 
-The starting handling times are $h_A=h_S=0.5$ in model units. These are exploratory values, not estimates from observations.
+| Algae concentration (micrograms Chl-a/L) | Phase 2 ingestion (micrograms Chl-a/shrimp/day) | Phase 3 ingestion (same units) |
+|---|---|---|
+| 1 | 0.020 | 0.020 |
+| 10 | 0.200 | 0.182 |
+| 50 | 1.000 | 0.667 |
+| 100 | 2.000 | 1.000 |
+| 500 | 10.000 | 1.667 |
+
+At 100 micrograms Chl-a/L, Phase 3 ingestion is half its maximum. This **half-saturation concentration** is:
+
+$$
+A_{\mathrm{half}}=\frac{1}{h_A C_A}.
+$$
+
+Below this concentration, feeding is more strongly limited by finding food. Above it, processing food increasingly limits consumption. Larger `C_A` increases feeding at low food and moves half-saturation to a lower concentration, without changing the maximum if `h_A` stays fixed. Larger `h_A` lowers the maximum and also moves half-saturation to a lower concentration.
+
+The example above is calculated from our starting guesses. The handling times are full-blown guesses, not experimental estimates. Because our food unit is micrograms of chlorophyll, `h_A` is time per chlorophyll-equivalent food unit per consumer; it is not simply a number of days or a time per algal cell.
+
+### From one shrimp to the ecosystem
+
+The feeding limit applies to **each shrimp**, not to the entire population. Multiplying by shrimp density gives algae removal from each liter:
+
+$$
+\text{algae removal rate}=S f_A(A).
+$$
+
+For example, at 10 micrograms Chl-a/L, each shrimp consumes about 0.182 micrograms Chl-a/day under Phase 3. With 2 shrimp/L, total removal is about **0.364 micrograms Chl-a/L/day**. Doubling shrimp density doubles removal at the same food concentration, even though each shrimp has a feeding limit.
+
+The algae equation subtracts this removal. The shrimp equation adds it multiplied by `gamma_S`, which converts food removal into shrimp production, and then subtracts predation and natural mortality.
+
+### Birds use the same shape
+
+Bird feeding saturates with shrimp density in the same way:
+
+$$
+f_S(S)=\frac{C_S S}{1+h_S C_S S}.
+$$
+
+With our mixed units, `f_S` is **shrimp-density removal per bird per day**. Actual shrimp eaten per bird per day requires multiplying by the modeled habitat volume in liters. Its ceiling is `1/h_S`; its half-saturation density is `1/(h_S C_S)`. Multiplying by bird count `B` gives the total shrimp-density loss in the equations. `h_S`, like `h_A`, is a full-blown guess.
+
+Setting both handling parameters to zero removes the feeding limits and recovers Phase 2 exactly.
+
+### Example trajectories and saved figures
+
+![Time series with no handling, shrimp handling only, and both feeding links saturating](model3/figures/feeding_time_series.png)
+
+*The panels hold the other parameters and initial conditions fixed while changing which feeding links saturate. Algae concentration, shrimp density, and bird count have different units, so the heights of different species' curves are not directly comparable. These are exploratory simulations, not calibrated population forecasts.*
+
+Feeding saturation can change oscillations and equilibrium stability because abundant prey no longer cause unlimited per-consumer predation. It does not automatically stabilize the ecosystem. The [Phase 3 notebook](model3/phase3_model.ipynb) checks equilibrium stability and also plots the shrimp-algae subsystem without birds.
+
+Both notebooks save PNG figures whenever their plotting cells run:
+
+| Notebook | Saved figures |
+|---|---|
+| Phase 2 | `model2/figures/time_series.png`, `shrimp_algae_phase_plane.png`, `bird_mortality_comparison.png` |
+| Phase 3 | `model3/figures/feeding_response.png`, `feeding_time_series.png`, `shrimp_algae_phase_plane.png` |
+
+Paths are resolved from the project folder, so running from the project root or a notebook's folder saves to the same location. Rerunning replaces the corresponding figures; the Markdown examples then show those updated images.
 
 ## Sources and calibration notes
 
