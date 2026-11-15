@@ -1,6 +1,23 @@
 # Great Salt Lake Ecosystem Model 
 
+## Units and parameter guesses
 
+Time is in **days**; algae $A$ is water chlorophyll-a in **$\mu$g Chl-a/L**; shrimp $S$ is **individuals/L**; birds $B$ is **individuals**. Chlorophyll represents the algae community, with *Dunaliella viridis* as the focal food species. All values below are provisional, not calibrated.
+
+| Parameter | Meaning | Value | Units | Brief justification |
+|---|---|---|---|---|
+| `beta_A` | Algae growth rate | 0.3 | day$^{-1}$ | Guess: about 2.3-day doubling at low abundance |
+| `K` | Algae carrying capacity | 50 | $\mu$g Chl-a/L | Exploratory guess; observed peaks do not directly measure capacity |
+| `C_A` | Shrimp clearance coefficient | 0.02 | L/(shrimp day) | Intermediate guess informed by laboratory clearance scales (Makridis & Vadstein, 1999) |
+| `C_S` | Effective bird feeding coefficient | 0.4 | 1/(bird day) | Earlier illustrative value; needs feeding and habitat-volume estimates |
+| `gamma_S` | Shrimp gain per chlorophyll loss | 0.2 | shrimp/($\mu$g Chl-a) | Earlier illustrative conversion; needs production data |
+| `gamma_B` | Bird gain per shrimp density loss | 0.3 | bird L/shrimp | Earlier illustrative conversion; needs demographic and volume estimates |
+| `delta_S` | Shrimp natural mortality | 0.03 | day$^{-1}$ | Exploratory guess; separate from predation |
+| `delta_B` | Bird natural mortality | 0.12 | day$^{-1}$ | Earlier illustrative value; separate from migration |
+| `h_A` | Inverse maximum shrimp ingestion | 0.5 | day shrimp/($\mu$g Chl-a) | Phase 3 only; illustrative saturation guess |
+| `h_S` | Inverse maximum bird density removal | 0.5 | day bird L/shrimp | Phase 3 only; illustrative saturation guess |
+
+Initial guesses: $S_0=1$ shrimp/L, $A_0=10$ $\mu$g Chl-a/L, $B_0=1$ bird. Salinity sources report experimental values in **ppt**; salinity is not yet included in the equations. Full sources, study details, exploratory ranges, and conversion notes appear at the bottom.
 
 ## Base Model
 
@@ -221,9 +238,9 @@ The new [Phase 3 notebook](model3/phase3_model.ipynb) compares phase 2 with feed
 
 The starting handling times are $h_A=h_S=0.5$ in model units. These are exploratory values, not estimates from observations.
 
-## Species, units, and parameter evidence
+## Sources and calibration notes
 
-For this school exploration, the algae state $A$ is **water-column chlorophyll-a concentration**, used directly as a proxy for algae abundance. Its units are **micrograms of chlorophyll-a per liter** ($\mu$g Chl-a/L). It is not total algal dry mass or carbon. Water chlorophyll includes multiple phytoplankton species; treating it as the food available to shrimp is a simplifying assumption.
+For this exploration, the algae state $A$ is **water-column chlorophyll-a concentration**, used directly as a proxy for algae abundance. Its units are **micrograms of chlorophyll-a per liter** ($\mu$g Chl-a/L). It is not total algal dry mass or carbon. Water chlorophyll includes multiple phytoplankton species; treating it as the food available to shrimp is a simplifying assumption.
 
 *Dunaliella viridis* remains the focal algae species motivating the model. [Utah DWR, Algae and algal blooms](https://wildlife.utah.gov/gslep/wildlife/algae) identifies it as a preferred food of brine shrimp. The chlorophyll proxy is not a species-specific measurement of *D. viridis*.
 
@@ -233,39 +250,33 @@ For this school exploration, the algae state $A$ is **water-column chlorophyll-a
 - [Utah DWQ Great Salt Lake Data Explorer](https://udwq.shinyapps.io/GSL_data_explorer/): a place to look for lake chlorophyll-a and salinity observations. [DWQ monitoring documentation](https://lf-public.deq.utah.gov/WebLink/ElectronicFile.aspx?dbid=0&docid=14163&eqdocs=DWQ-2021-018149&repo=Public) describes these parameters. Check the downloaded record's units, date, location, depth, and method; the dashboard was not directly inspected. Do not interchange ppt and g/L without checking the reported salinity definition and brine density.
 - [Utah DWR brine shrimp sampling reports](https://wildlife.utah.gov/gslep/harvest): observations **per liter of lake water**, separated by life stage and sex. Use the appropriate live-shrimp categories for $S$ and avoid double-counting female subcategories. Cysts are separate from live shrimp.
 
-### Chosen state units
-
-Time is measured in **days**. Shrimp is measured as **density (individual shrimp/L)** to match the sampling reports and the concentration basis of algae. Birds remain **individual birds** in the modeled region. Population observations must describe compatible dates and habitat. The remaining bird species, shrimp life stages, season, and region are choices to make before calibration.
-
-| Quantity | Meaning | Unit / status |
-|---|---|---|
-| $t$ | Elapsed time | days |
-| $A$ | Water chlorophyll-a, a proxy for algae | $\mu$g Chl-a/L |
-| $S$ | Live brine shrimp density | individual shrimp/L |
-| $B$ | Bird abundance in the modeled region | individual birds |
-| $A_0,S_0,B_0$ | Initial observations | Same units as the corresponding states |
-| $T$ | Simulation duration | days |
-| Salinity (not yet a model state or parameter) | Environmental context | Study experiments: ppt; retain units specified by each field dataset |
-
-### Parameter table
-
-The units below follow from the current equations with these state units. Default values are shared by Phases 2 and 3; handling times apply only to Phase 3. **All existing numbers remain illustrative and uncalibrated under the chosen units.** Relabeling the states does not convert or validate the old numerical values.
-
-| Code parameter | Meaning | Required units | Illustrative default | Evidence to seek |
-|---|---|---|---|---|
-| `beta_A` | Maximum per-capita algae growth rate | day$^{-1}$ | 1.0 | Fit growth curves under relevant environmental conditions |
-| `K` | Chlorophyll carrying capacity without grazing | $\mu$g Chl-a/L | 10.0 | Ungrazed experiments or constrained estimates; grazed maxima need not equal `K` |
-| `C_A` | Shrimp-algae feeding coefficient | L/(shrimp day) | 0.5 | Per-shrimp chlorophyll removal versus food concentration |
-| `C_S` | Effective bird-shrimp feeding coefficient | 1/(bird day) | 0.4 | Bird feeding and habitat volume conversions |
-| `gamma_S` | Shrimp density gain per chlorophyll concentration loss | shrimp/($\mu$g Chl-a) | 0.2 | Shrimp production versus chlorophyll removal |
-| `gamma_B` | Bird count gain per shrimp density loss | bird L/shrimp | 0.3 | Demographic evidence and volume conversion; review migration assumptions |
-| `delta_S` | Shrimp natural per-capita mortality | day$^{-1}$ | 0.1 | Stage-specific survival, separated from predation |
-| `delta_B` | Bird natural per-capita mortality | day$^{-1}$ | 0.12 | Survival, separated from migration departures |
-| `h_A` | Inverse maximum per-shrimp chlorophyll consumption rate | day shrimp/($\mu$g Chl-a) | 0.5 | Saturating shrimp feeding curve |
-| `h_S` | Inverse maximum per-bird shrimp density removal rate | day bird L/shrimp | 0.5 | Saturating bird feeding curve and habitat volume conversion |
+### Unit conversions and model assumptions
 
 `gamma_S` and `gamma_B` are unit-dependent conversion factors, not necessarily dimensionless efficiencies or bounded by one. Chlorophyll-based conversions are effective model relationships rather than direct food-mass efficiencies.
 
 Because birds are counts and shrimp is density, the bird predation terms still require a defined habitat volume when translating physical consumption into model coefficients. For a fixed volume $V$ in liters, total bird consumption $Q$ shrimp/day removes density at $Q/V$ shrimp/L/day. Thus `C_S`, `gamma_B`, and `h_S` include spatial conversions. Retaining the current equations is acceptable for exploration with effective coefficients, but a changing-volume model would require an explicit mass balance.
 
 Next steps: select compatible lake observations, document their region, season, depths, and units, then estimate daily parameter ranges with sources and uncertainty. Salinity is recorded as context for now; the current equations do not yet depend on it.
+
+### First guesses and feeding experiments
+
+These are starting guesses for exploration, not fitted estimates or confidence intervals. Change one at a time before attempting a fit to observations.
+
+| Parameter | First guess | Suggested exploratory range | Basis |
+|---|---|---|---|
+| `C_A` | 0.02 L/(shrimp day) | 0.002-0.05 | Order-of-magnitude guess informed by clearance experiments; not a measured *D. viridis* lake-average rate |
+| `beta_A` | 0.3/day | 0.1-0.6/day | Unverified guess; low-density algae doubling time about 2.3 days |
+| `K` | 50 micrograms Chl-a/L | 20-100 micrograms Chl-a/L | Unverified carrying-capacity guess; field chlorophyll peaks are not ungrazed carrying capacity |
+| `delta_S` | 0.03/day | 0.01-0.1/day | Unverified natural-mortality guess; excludes bird predation |
+
+Other coefficients, including conversion factors, bird feeding/mortality, and Phase 3 handling times, retain the earlier illustrative values. They have no experimental calibration. Initial conditions are also guesses: 1 shrimp/L, 10 micrograms Chl-a/L, and 1 bird in an unspecified habitat. Bird-related results cannot be interpreted quantitatively until habitat volume and bird parameters are specified. No values were selected to guarantee coexistence.
+
+**Experiments located:**
+
+1. [Sura, Herlihy, Mahon and Belovsky (2017), Environmental impacts on grazing of different brine shrimp (Artemia franciscana) life stages](https://link.springer.com/article/10.1007/s10750-016-3047-5). Directly relevant: Great Salt Lake shrimp feeding on *D. viridis* and *Coccochloris elabens*, with life stage, salinity, temperature and food concentration varied. One-hour trials show that one universal feeding coefficient is a simplification. The publisher provides an abstract/preview; no numerical ingestion rate was extracted from its full text here. Best next source for condition-specific feeding estimates, potentially through university access.
+
+2. [Belovsky, Stumpf and Girgis (published online 2024; volume 2025), Artemia selective grazing: survival value and nutritional intake](https://link.springer.com/article/10.1007/s10750-024-05719-8). Open-access experiments with *D. viridis*, cyanobacteria and diatoms, singly and mixed, across shrimp developmental stages. Reports ingestion as biovolume/individual/hour and describes chlorophyll, cell-count and biovolume conversions. Particularly useful for our community-chlorophyll approximation; rates must be converted before insertion into the equations.
+
+3. [Makridis and Vadstein (1999), Food size selectivity of Artemia franciscana at three developmental stages](https://academic.oup.com/plankt/article-abstract/21/11/2191/1499662). The abstract reports maximum clearance rates of 50-63 microliters/individual/hour at 2 days old, 254 at 4 days, and 1.48-2.10 milliliters/individual/hour at 7 days. Converted by multiplying by 24 and converting to liters, these are 0.0012-0.001512, 0.006096, and 0.03552-0.0504 L/(individual day). These are laboratory maximum rates across tested particles, not a *D. viridis*-specific field estimate. They support exploring a broad feeding scale; `C_A=0.02` is our intermediate guess, not a reported experimental result.
+
+For Phase 2, ingestion $I$ in micrograms Chl-a/(shrimp day) at food concentration $A$ gives $C_A=I/A$; clearance in L/(shrimp day) maps directly to `C_A` under the proportional-feeding assumption. For Phase 3, fit $I(A)=C_A A/(1+h_A C_A A)$ to multiple concentrations: `C_A` is the low-food slope and $1/h_A$ is the maximum ingestion rate. A single clearance measurement does not identify both parameters. For example, `C_A=0.02` predicts 0.2 micrograms Chl-a/(shrimp day) at $A=10$ in Phase 2; Phase 3's current guessed handling time reduces that to about 0.182.
