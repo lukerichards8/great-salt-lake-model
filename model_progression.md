@@ -8,8 +8,8 @@
 
 | Symbol | Meaning |
 |---|---|
-| $S(t)$ | Brine shrimp population |
-| $A(t)$ | Algae population |
+| $S(t)$ | Brine shrimp density (individuals/L) |
+| $A(t)$ | Water chlorophyll-a concentration (algae proxy) |
 | $B(t)$ | Bird population |
 
 ### Equations
@@ -36,7 +36,7 @@ $$
 ### Interpretation of Terms
 
 - **Interaction rates ($C$).** When two populations interact, one eats the other. For example, $C_S   S B$ is the rate at which birds eat shrimp, and $C_A   S A$ is the rate at which shrimp eat algae.
-- **Conversion efficiencies ($\gamma$).** $\gamma$ is the population gain from one thing consuming another. For example, $\gamma_S C_A S A$ is the shrimp population gained from all the shrimp eating algae. We always have $\gamma < 1$, because a shrimp must eat many algae before it can support producing an additional offspring (and likewise for birds eating shrimp).
+- **Conversion efficiencies ($\gamma$).** $\gamma$ is the population gain from one thing consuming another. For example, $\gamma_S C_A S A$ is the shrimp population gained from all the shrimp eating algae. These conversion factors have units determined by the population measurements; their numerical values are not universally bounded by one.
 - **Natural death ($\delta$).** $\delta_B B$ is the loss of birds to natural death.
 
 #### Term-by-term
@@ -177,6 +177,95 @@ All other parameters keep their meanings from the base model.
 
 ### Direction of Analysis
 
-We will examine whether these changes allow stable coexistence across a range of parameter values. As in the base model, we will start with the shrimp?algae phase plane without birds, then examine time series for all three populations and vary the bird death rate.
+We will examine whether these changes allow stable coexistence across a range of parameter values. As in the base model, we will start with the shrimp/algae phase plane without birds, then examine time series for all three populations and vary the bird death rate.
 
 Later, we may experiment with Holling type II feeding responses to represent consumption rates that saturate as food becomes abundant. For now, feeding interactions retain the base model's form.
+
+
+## Phase 3: Holling Type II Feeding
+
+We keep logistic algae growth and natural shrimp mortality from phase 2, and now allow feeding to saturate as food becomes abundant. Both shrimp eating algae and birds eating shrimp use a Holling type II response.
+
+### Equations
+
+$$
+\frac{dS}{dt} = \gamma_S\frac{C_A S A}{1+h_A C_A A} - \frac{C_S S B}{1+h_S C_S S} - \delta_S S
+$$
+
+$$
+\frac{dA}{dt} = \beta_A A\left(1-\frac{A}{K}\right) - \frac{C_A S A}{1+h_A C_A A}
+$$
+
+$$
+\frac{dB}{dt} = -\delta_B B + \gamma_B\frac{C_S S B}{1+h_S C_S S}
+$$
+
+### New Parameters
+
+| Symbol | Meaning |
+|---|---|
+| $h_A$ | Handling time per algae consumed by shrimp |
+| $h_S$ | Handling time per shrimp consumed by birds |
+
+All other parameters keep their meanings from phase 2. Setting $h_A=h_S=0$ recovers that model.
+
+### Interpretation of New Terms
+
+- **Shrimp feeding.** $C_A A/(1+h_A C_A A)$ is consumption per shrimp. At low algae abundance it is approximately $C_A A$; for positive $h_A$, it approaches a maximum of $1/h_A$ as algae become abundant.
+- **Bird feeding.** $C_S S/(1+h_S C_S S)$ is consumption per bird. For positive $h_S$, it approaches a maximum of $1/h_S$ as shrimp become abundant.
+- **Population gains and losses.** Each feeding term appears as a loss for the prey and a gain, multiplied by the conversion efficiency, for the consumer.
+
+### Direction of Analysis
+
+The new [Phase 3 notebook](model3/phase3_model.ipynb) compares phase 2 with feeding saturation on one or both links. We will examine feeding curves, time series, coexistence candidates and their local stability, and the shrimp-algae phase plane without birds. Saturation may change stability, so we will check it rather than assume phase 2's behavior carries over.
+
+The starting handling times are $h_A=h_S=0.5$ in model units. These are exploratory values, not estimates from observations.
+
+## Species, units, and parameter evidence
+
+For this school exploration, the algae state $A$ is **water-column chlorophyll-a concentration**, used directly as a proxy for algae abundance. Its units are **micrograms of chlorophyll-a per liter** ($\mu$g Chl-a/L). It is not total algal dry mass or carbon. Water chlorophyll includes multiple phytoplankton species; treating it as the food available to shrimp is a simplifying assumption.
+
+*Dunaliella viridis* remains the focal algae species motivating the model. [Utah DWR, Algae and algal blooms](https://wildlife.utah.gov/gslep/wildlife/algae) identifies it as a preferred food of brine shrimp. The chlorophyll proxy is not a species-specific measurement of *D. viridis*.
+
+### Sources for chlorophyll, salinity, and shrimp observations
+
+- [Belovsky et al. (2025), Environment and phytoplankton relative abundances in a hypersaline lake: 27 years in Great Salt Lake, USA and experiments](https://link.springer.com/article/10.1007/s10452-025-10190-1): a source for chlorophyll-a measurements, salinity information, and experiments with *D. viridis*. Laboratory chlorophyll is measured in micrograms Chl-a/L. Experimental salinities are 30, 60, 90, 120, and 150 **ppt** (parts per thousand); these are experimental treatments, not a chosen present-day lake salinity. The study also analyzes South Arm field monitoring from 1994-2020. Its experimental absolute growth measure is not directly the per-capita `beta_A` in our equations.
+- [Utah DWQ Great Salt Lake Data Explorer](https://udwq.shinyapps.io/GSL_data_explorer/): a place to look for lake chlorophyll-a and salinity observations. [DWQ monitoring documentation](https://lf-public.deq.utah.gov/WebLink/ElectronicFile.aspx?dbid=0&docid=14163&eqdocs=DWQ-2021-018149&repo=Public) describes these parameters. Check the downloaded record's units, date, location, depth, and method; the dashboard was not directly inspected. Do not interchange ppt and g/L without checking the reported salinity definition and brine density.
+- [Utah DWR brine shrimp sampling reports](https://wildlife.utah.gov/gslep/harvest): observations **per liter of lake water**, separated by life stage and sex. Use the appropriate live-shrimp categories for $S$ and avoid double-counting female subcategories. Cysts are separate from live shrimp.
+
+### Chosen state units
+
+Time is measured in **days**. Shrimp is measured as **density (individual shrimp/L)** to match the sampling reports and the concentration basis of algae. Birds remain **individual birds** in the modeled region. Population observations must describe compatible dates and habitat. The remaining bird species, shrimp life stages, season, and region are choices to make before calibration.
+
+| Quantity | Meaning | Unit / status |
+|---|---|---|
+| $t$ | Elapsed time | days |
+| $A$ | Water chlorophyll-a, a proxy for algae | $\mu$g Chl-a/L |
+| $S$ | Live brine shrimp density | individual shrimp/L |
+| $B$ | Bird abundance in the modeled region | individual birds |
+| $A_0,S_0,B_0$ | Initial observations | Same units as the corresponding states |
+| $T$ | Simulation duration | days |
+| Salinity (not yet a model state or parameter) | Environmental context | Study experiments: ppt; retain units specified by each field dataset |
+
+### Parameter table
+
+The units below follow from the current equations with these state units. Default values are shared by Phases 2 and 3; handling times apply only to Phase 3. **All existing numbers remain illustrative and uncalibrated under the chosen units.** Relabeling the states does not convert or validate the old numerical values.
+
+| Code parameter | Meaning | Required units | Illustrative default | Evidence to seek |
+|---|---|---|---|---|
+| `beta_A` | Maximum per-capita algae growth rate | day$^{-1}$ | 1.0 | Fit growth curves under relevant environmental conditions |
+| `K` | Chlorophyll carrying capacity without grazing | $\mu$g Chl-a/L | 10.0 | Ungrazed experiments or constrained estimates; grazed maxima need not equal `K` |
+| `C_A` | Shrimp-algae feeding coefficient | L/(shrimp day) | 0.5 | Per-shrimp chlorophyll removal versus food concentration |
+| `C_S` | Effective bird-shrimp feeding coefficient | 1/(bird day) | 0.4 | Bird feeding and habitat volume conversions |
+| `gamma_S` | Shrimp density gain per chlorophyll concentration loss | shrimp/($\mu$g Chl-a) | 0.2 | Shrimp production versus chlorophyll removal |
+| `gamma_B` | Bird count gain per shrimp density loss | bird L/shrimp | 0.3 | Demographic evidence and volume conversion; review migration assumptions |
+| `delta_S` | Shrimp natural per-capita mortality | day$^{-1}$ | 0.1 | Stage-specific survival, separated from predation |
+| `delta_B` | Bird natural per-capita mortality | day$^{-1}$ | 0.12 | Survival, separated from migration departures |
+| `h_A` | Inverse maximum per-shrimp chlorophyll consumption rate | day shrimp/($\mu$g Chl-a) | 0.5 | Saturating shrimp feeding curve |
+| `h_S` | Inverse maximum per-bird shrimp density removal rate | day bird L/shrimp | 0.5 | Saturating bird feeding curve and habitat volume conversion |
+
+`gamma_S` and `gamma_B` are unit-dependent conversion factors, not necessarily dimensionless efficiencies or bounded by one. Chlorophyll-based conversions are effective model relationships rather than direct food-mass efficiencies.
+
+Because birds are counts and shrimp is density, the bird predation terms still require a defined habitat volume when translating physical consumption into model coefficients. For a fixed volume $V$ in liters, total bird consumption $Q$ shrimp/day removes density at $Q/V$ shrimp/L/day. Thus `C_S`, `gamma_B`, and `h_S` include spatial conversions. Retaining the current equations is acceptable for exploration with effective coefficients, but a changing-volume model would require an explicit mass balance.
+
+Next steps: select compatible lake observations, document their region, season, depths, and units, then estimate daily parameter ranges with sources and uncertainty. Salinity is recorded as context for now; the current equations do not yet depend on it.
